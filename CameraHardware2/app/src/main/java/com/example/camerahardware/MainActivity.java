@@ -8,6 +8,7 @@ import android.hardware.Camera;
 //import android.hardware.camera2.*;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private Camera mCamera;
     private CameraPreview mCameraPreview;
     boolean cam;
-    private String currentPhotoPath;
+    private String currentPhotoPath="default path";
+//    SurfaceView preview;
 
     /** Called when the activity is first created. */
     @Override
@@ -36,20 +38,41 @@ public class MainActivity extends AppCompatActivity {
         mCamera = getCameraInstance();
         cam = checkCameraHardware(this);
         mCameraPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+
+
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_Preview);
+
         preview.addView(mCameraPreview);
 
         Button captureButton = (Button) findViewById(R.id.button_capture);
         captureButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Log.d("MyCameraApp", "mcamera access"+"   "+mCamera);
                 Log.d("MyCameraApp", "camera open"+"   "+cam);
-                Log.d("MyCameraApp", "path"+"   "+currentPhotoPath);
+//                Log.d("MyCameraApp", "path"+"   "+currentPhotoPath)
 
+                //mCameraPreview.surfaceCreated(mCameraPreview.mSurfaceHolder);
+
+              // mCamera.startPreview();
                 mCamera.takePicture(null, null, mPicture);
+
+                //                mCameraPreview = new CameraPreview(this ,mCamera);
+                Log.d("MyCameraApp", "path"+"   "+currentPhotoPath);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+//Do something after 1000ms
+                        mCamera.startPreview();
+                    }
+                }, 1000);
+//                preview.removeView(mCameraPreview);
+//                preview.addView(mCameraPreview);
             }
         });
+
     }
 
     /**
@@ -88,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
             try {
                 pictureFile = getOutputMediaFile();
             } catch (IOException e) {
+                Toast.makeText(getApplicationContext(), "Input file problem.", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_CANCELED);
+                finish();
                 e.printStackTrace();
             }
             if (pictureFile == null) {
@@ -97,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
+//                finish();
             } catch (FileNotFoundException e) {
                 Toast.makeText(getApplicationContext(), "Input file problem.", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_CANCELED);

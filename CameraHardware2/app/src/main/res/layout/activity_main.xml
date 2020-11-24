@@ -2,13 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/camera_preview"
-        android:layout_width="fill_parent"
-        android:layout_height="707dp"
-        android:layout_weight="1" />
+        android:id="@+id/camera_Preview"
+        android:layout_width="match_parent"
+        android:layout_height="600dp">
+
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="555dp" />
+    </FrameLayout>
 
     <Button
         android:id="@+id/button_capture"
